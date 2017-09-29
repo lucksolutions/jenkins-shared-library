@@ -5,6 +5,10 @@ def call(body) {
     body.delegate = config
     body()
 
+    if (config.directory == null) {
+        config.directory = '.'
+    }
+
     pipeline {
         agent any
 
@@ -19,7 +23,7 @@ def call(body) {
                     maven 'Maven'
                 }
                 steps {
-                    dir('ascent-platform-parent') {
+                    dir('${config.directory}') {
                         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
                             sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ../settings.xml clean deploy'
                         }
