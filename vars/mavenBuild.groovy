@@ -11,23 +11,16 @@ def call(body) {
 
     node {
         stage ('Setup') {
-            steps {
-                dir('${config.directory') {
-                    sh 'mvn clean'
-                    def settings = libraryResource 'com/lucksolutions/maven/settings.xml'
-                    writeFile('target/settings.xml',  settings)
-                }
+            dir('${config.directory') {
+                sh 'mvn clean'
+                def settings = libraryResource 'com/lucksolutions/maven/settings.xml'
+                writeFile('target/settings.xml',  settings)
             }
         }
         stage('Build') {
-            tools {
-                maven 'Maven'
-            }     
-            steps {
-                dir('${config.directory') {
-                    withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                        sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s target/settings.xml deploy'
-                    }
+            dir('${config.directory') {
+                withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
+                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s target/settings.xml deploy'
                 }
             }
         }
