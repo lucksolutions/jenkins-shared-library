@@ -18,7 +18,7 @@ def call(body) {
         }
         
         stages {
-            stage('Docker Build') {
+            stage('Build Docker Image') {
                 steps {
                     dir("${config.directory}") {
                         script {
@@ -31,12 +31,23 @@ def call(body) {
                     }
                 }
             }
-            stage('Docker Deploy') {
+            stage('Deploy Docker Container') {
+                steps {
+                    sh 'echo "Deploying Docker Container..."'
+                }
+            }
+            stage('Test Docker Container') {
+                steps {
+                    sh 'echo "Executing test cases..."'
+                }
+            }
+            stage('Push Image to Registry') {
                 steps {
                     dir("${config.directory}") {
                         script {
                             docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
                                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                                    def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                                     image.push()
                                     if (env.BRANCH_NAME == 'development') {
                                         image.push('latest')
