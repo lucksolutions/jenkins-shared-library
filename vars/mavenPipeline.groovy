@@ -23,7 +23,7 @@ def call(body) {
                     maven 'Maven'
                 }
                 steps {
-                    dir('${config.directory}') {
+                    dir("${config.directory}") {
                         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
                             sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s ../settings.xml clean deploy'
                         }
