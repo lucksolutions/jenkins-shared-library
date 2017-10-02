@@ -25,7 +25,7 @@ def call(body) {
             stage('Maven Build') {
                 steps {
                     dir("${config.directory}") {
-                        sh 'mvn clean'
+                        sh 'mvn --offline clean'
                         script {
                             def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
                             writeFile('target/settings.xml', mavenSettings)
