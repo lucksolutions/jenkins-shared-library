@@ -25,6 +25,18 @@ def call(body) {
                             docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
                                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            stage('Docker Deploy') {
+                steps {
+                    dir("${config.directory}") {
+                        script {
+                            docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
+                                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                                     image.push()
                                     if (env.BRANCH_NAME == 'development') {
                                         image.push('latest')
