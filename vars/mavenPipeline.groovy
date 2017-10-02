@@ -27,11 +27,10 @@ def call(body) {
                     dir("${config.directory}") {
                         script {
                             def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
+                            writeFile file: 'settings.xml', text: mavenSettings
                         }
-                        writeFile('settings.xml', mavenSettings)
-                        sh 'mvn clean'
                         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                            sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s settings.xml deploy'
+                            sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s settings.xml clean deploy'
                         }
                     }
                 }
