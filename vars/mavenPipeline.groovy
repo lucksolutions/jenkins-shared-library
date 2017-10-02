@@ -28,7 +28,6 @@ def call(body) {
                         script {
                             def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
                         }
-                        sh 'echo ${mavenSettings}'
                         writeFile('settings.xml', mavenSettings)
                         sh 'mvn clean'
                         withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
