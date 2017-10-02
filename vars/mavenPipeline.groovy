@@ -23,8 +23,10 @@ def call(body) {
         
         stages {
             stage('Maven Setup') {
-                def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
-                writeFile('target/settings.xml', mavenSettings)
+                script {
+                    def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
+                    writeFile('target/settings.xml', mavenSettings)
+                }
                 sh 'mvn clean'
             }
 
