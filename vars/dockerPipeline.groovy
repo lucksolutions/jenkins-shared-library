@@ -13,7 +13,7 @@ def call(body) {
         stage('Checkout SCM') {
             checkout scm
         }
-        stage('Build Image') {
+        stage("Build ${config.imageName}") {
             dir("${config.directory}") {
                 docker.withServer('tcp://ip-10-247-80-40.us-gov-west-1.compute.internal:2375') {
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
@@ -22,13 +22,13 @@ def call(body) {
                 }
             }
         }
-        stage('Deploy Image') {
+        stage("Deploy ${config.imageName}") {
             sh 'echo "Deploying Docker Container..."'
         }
-        stage('Test Image') {
+        stage("Test ${config.imageName}") {
             sh 'echo "Executing test cases..."'
         }
-        stage('Push to Registry') {
+        stage("Push ${config.imageName} to Registry") {
             dir("${config.directory}") {
                 docker.withServer('tcp://ip-10-247-80-40.us-gov-west-1.compute.internal:2375') {
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
