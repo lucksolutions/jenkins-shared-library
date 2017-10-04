@@ -18,7 +18,7 @@ def call(body) {
         }
         
         stages {
-            stage("Build ${config.imageName}") {
+            stage('Build Image') {
                 steps {
                     dir("${config.directory}") {
                         script {
@@ -31,17 +31,17 @@ def call(body) {
                     }
                 }
             }
-            stage("Deploy ${config.imageName}") {
+            stage('Deploy Image') {
                 steps {
                     sh 'echo "Deploying Docker Container..."'
                 }
             }
-            stage("Test ${config.imageName}") {
+            stage('Test Image') {
                 steps {
                     sh 'echo "Executing test cases..."'
                 }
             }
-            stage("Push ${config.imageName} to Registry") {
+            stage('Push to Registry') {
                 steps {
                     dir("${config.directory}") {
                         script {
