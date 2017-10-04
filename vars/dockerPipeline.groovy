@@ -31,7 +31,7 @@ def call(body) {
                     }
                 }
             }
-            stage("Deploy ${config.imageName}r") {
+            stage("Deploy ${config.imageName}") {
                 steps {
                     sh 'echo "Deploying Docker Container..."'
                 }
