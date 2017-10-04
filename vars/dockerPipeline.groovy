@@ -10,6 +10,9 @@ def call(body) {
     }
 
     node {
+        stage('Checkout SCM') {
+            checkout scm
+        }
         stage('Build Image') {
             dir("${config.directory}") {
                 docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {

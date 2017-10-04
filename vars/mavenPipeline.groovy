@@ -10,6 +10,9 @@ def call(body) {
     }
 
     node {
+        stage('Checkout SCM') {
+            checkout scm
+        }
         stage('Maven Build') {
             dir("${config.directory}") {
                 def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
