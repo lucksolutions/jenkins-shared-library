@@ -9,41 +9,30 @@ def call(body) {
         config.directory = '.'
     }
 
-    
-    stage('Build Image') {
-        steps {
+    node {
+        stage('Build Image') {
             dir("${config.directory}") {
-                script {
-                    docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                            def image = docker.build("${config.imageName}:${BRANCH_NAME}")
-                        }
+                docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                        def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                     }
                 }
             }
         }
-    }
-    stage('Deploy Image') {
-        steps {
+        stage('Deploy Image') {
             sh 'echo "Deploying Docker Container..."'
         }
-    }
-    stage('Test Image') {
-        steps {
+        stage('Test Image') {
             sh 'echo "Executing test cases..."'
         }
-    }
-    stage('Push to Registry') {
-        steps {
+        stage('Push to Registry') {
             dir("${config.directory}") {
-                script {
-                    docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                            def image = docker.build("${config.imageName}:${BRANCH_NAME}")
-                            image.push()
-                            if (env.BRANCH_NAME == 'development') {
-                                image.push('latest')
-                            }
+                docker.withServer('tcp://ip-10-247-80-51.us-gov-west-1.compute.internal:2375') {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                        def image = docker.build("${config.imageName}:${BRANCH_NAME}")
+                        image.push()
+                        if (env.BRANCH_NAME == 'development') {
+                            image.push('latest')
                         }
                     }
                 }
