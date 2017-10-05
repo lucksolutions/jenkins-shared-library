@@ -12,7 +12,7 @@ def call(body) {
     node {
         properties([
             pipelineTriggers([
-                [$class: "GitHubPushTrigger"]
+                pollSCM('*/5 * * * *')
             ])
         ])
 
