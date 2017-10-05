@@ -30,7 +30,7 @@ def call(body) {
                 }
                 finally {
                     echo 'Publishing Test Reports...'
-                    step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0])
+                    step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0, allowEmptyResults: true])
                     publishHTML (target: [
                         allowMissing: true,
                         alwaysLinkToLastBuild: false,
