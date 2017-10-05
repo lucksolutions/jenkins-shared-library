@@ -15,13 +15,28 @@ def call(body) {
         }
         stage('Maven Build') {
             dir("${config.directory}") {
-                def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
-                writeFile file: 'settings.xml', text: mavenSettings
-                withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s settings.xml clean deploy'
+                try {
+                    def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
+                    writeFile file: 'settings.xml', text: mavenSettings
+                    withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
+                        sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -s settings.xml clean deploy'
+                    }
+                }
+                finally {
+                    echo 'Publishing Test Reports...'
+                    step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0])
+                    publishHTML (target: [
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '**/target/site/jacoco',
+                        reportFiles: 'index.html',
+                        reportName: "JUnit Test Report"
+                    ])
                 }
             }
         }
+        stage('')
     }
 
 }
