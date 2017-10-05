@@ -31,12 +31,11 @@ def call(body) {
                         keepAll: true,
                         reportDir: '**/target/site/jacoco',
                         reportFiles: 'index.html',
-                        reportName: "JUnit Test Report"
+                        reportName: "Code Coverage"
                     ])
                 }
             }
         }
-        stage('')
     }
 
 }
