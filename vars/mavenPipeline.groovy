@@ -35,7 +35,7 @@ def call(body) {
                         allowMissing: true,
                         alwaysLinkToLastBuild: false,
                         keepAll: true,
-                        reportDir: '**/target/site/jacoco',
+                        reportDir: '**/site/jacoco',
                         reportFiles: 'index.html',
                         reportName: "Code Coverage"
                     ])
