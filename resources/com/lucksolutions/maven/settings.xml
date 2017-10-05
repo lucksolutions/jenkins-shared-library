@@ -37,6 +37,25 @@
                         <repo.release>${repo.baseurl}/maven-releases</repo.release>
                         <repo.snapshot>${repo.baseurl}/maven-snapshots</repo.snapshot>
                   </properties>
+
+                  <!--Enable snapshots for the built in central repo to direct -->
+                  <!--all requests to nexus via the mirror -->
+                  <repositories>
+                        <repository>
+                              <id>central</id>
+                              <url>http://central</url>
+                              <releases><enabled>true</enabled></releases>
+                              <snapshots><enabled>true</enabled></snapshots>
+                        </repository>
+                  </repositories>
+                  <pluginRepositories>
+                        <pluginRepository>
+                              <id>central</id>
+                              <url>http://central</url>
+                              <releases><enabled>true</enabled></releases>
+                              <snapshots><enabled>true</enabled></snapshots>
+                        </pluginRepository>
+                  </pluginRepositories>
             </profile>
       </profiles>
 </settings>
