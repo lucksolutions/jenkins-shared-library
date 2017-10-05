@@ -10,6 +10,12 @@ def call(body) {
     }
 
     node {
+        properties([
+            pipelineTriggers([
+                pollSCM('*/5 * * * *')
+            ])
+        ])
+
         stage('Checkout SCM') {
             checkout scm
         }
