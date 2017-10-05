@@ -7,6 +7,7 @@ def call(body) {
 
     node {
         stage('Test Docker') {
+            sh 'whoami'
             sh 'docker ps'
         }
     }
