@@ -10,6 +10,12 @@ def call(body) {
     }
 
     node {
+        properties([
+            pipelineTriggers([
+                [$class: "GitHubPushTrigger"]
+            ])
+        ])
+
         stage('Checkout SCM') {
             checkout scm
         }
