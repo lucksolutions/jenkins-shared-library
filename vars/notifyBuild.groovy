@@ -2,6 +2,7 @@
 def call(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
+  previousStatus = currentBuild.getPreviousBuild() ?: 'SUCCESSFUL'
  
   // Default values
   def colorName = 'RED'
@@ -23,10 +24,11 @@ def call(String buildStatus = 'STARTED') {
     colorCode = '#FF0000'
   }
  
-  // Send notifications
+  // Send notifications of build state change
   //slackSend (color: colorCode, message: summary)
- 
-  hipchatSend (color: color, notify: true, message: summary)
+  if (previousStatus != buildStatus) {
+    hipchatSend (color: color, notify: true, message: summary)
+  }
  
   // emailext (
   //     subject: subject,
