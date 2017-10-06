@@ -31,12 +31,14 @@ def call(body) {
                 }
             }
 
-            stage('Unit Testing') {
-                try {
-                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -Dmaven.test.failure.ignore=true -s settings.xml test'
-                } finally {
-                    echo 'Publishing Test Reports...'
-                    step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0, allowEmptyResults: true])
+            try {
+                stage('Unit Testing') {
+                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -Dmaven.test.failure.ignore=true -s settings.xml test'   
+                }
+            } finally {
+                step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0, allowEmptyResults: true])
+                if (currentBuild.result == 'UNSTABLE') {
+                    return 
                 }
             }
             stage('Package') {
