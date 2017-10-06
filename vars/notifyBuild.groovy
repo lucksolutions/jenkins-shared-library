@@ -7,7 +7,7 @@ def call(String buildStatus = 'STARTED') {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} (${env.BUILD_URL})"
+  def summary = """${subject} (<a href="${env.RUN_DISPLAY_URL}">Build Results</a>"""
   def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
     <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>"""
  
@@ -26,8 +26,7 @@ def call(String buildStatus = 'STARTED') {
   // Send notifications
   //slackSend (color: colorCode, message: summary)
  
-  //hipchatSend (color: color, notify: true, message: summary)
-  hipchatSend(message: summary)
+  hipchatSend (color: color, notify: true, message: summary)
  
   // emailext (
   //     subject: subject,
