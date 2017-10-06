@@ -37,7 +37,6 @@ def call(body) {
                 } catch (e) {
                     currentBuild.result = "UNSTABLE"
                     throw e
-                }
                 } finally {
                     echo 'Publishing Test Reports...'
                     step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0, allowEmptyResults: true])
