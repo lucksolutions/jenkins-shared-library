@@ -6,7 +6,7 @@ def call(String buildStatus = 'STARTED') {
 
   //Previous builds have a SUCCESS state, change to SUCCESSFUL to match current build
   if (previousStatus == 'SUCCESS') {
-    prevuousStatus = 'SUCCESSFUL'
+    previousStatus = 'SUCCESSFUL'
   }
   sh "echo Previous status was: ${previousStatus}"
  
