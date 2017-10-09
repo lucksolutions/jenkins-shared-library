@@ -17,11 +17,11 @@ def call(body) {
         ])
 
         try {
-            dir("${config.directory}") {
+            stage('Checkout SCM') {
+                checkout scm
+            }
 
-                stage('Checkout SCM') {
-                    checkout scm
-                }
+            dir("${config.directory}") {
                 stage('Maven Build') {
                     def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
                     writeFile file: 'settings.xml', text: mavenSettings
