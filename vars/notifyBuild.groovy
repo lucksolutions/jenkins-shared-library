@@ -2,7 +2,8 @@
 def call(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
-  previousStatus = currentBuild.getPreviousBuild() ?: 'SUCCESSFUL'
+  previousBuild = currentBuild.getPreviousBuild() ?: 'SUCCESSFUL'
+  previousStatus = previousBuild.result
   sh "echo Previous status was: ${previousStatus}"
  
   // Default values
