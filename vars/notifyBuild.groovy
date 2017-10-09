@@ -2,8 +2,12 @@
 def call(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
-  previousBuild = currentBuild.getPreviousBuild() ?: 'SUCCESSFUL'
-  previousStatus = previousBuild.result
+  previousStatus = currentBuild.getPreviousBuild() ? currentBuild.getPreviousBuild().result : 'SUCCESSFUL'
+
+  //Previous builds have a SUCCESS state, change to SUCCESSFUL to match current build
+  if (previousStatus == 'SUCCESS') {
+    prevuousStatus = 'SUCCESSFUL'
+  }
   sh "echo Previous status was: ${previousStatus}"
  
   // Default values
@@ -29,15 +33,17 @@ def call(String buildStatus = 'STARTED') {
     colorCode = '#FF0000'
   }
  
-  // Send notifications of build state change
-  //slackSend (color: colorCode, message: summary)
-  if (previousStatus != buildStatus) {
+ //Notify only on a status change
+ if (previousStatus != buildStatus) {
+    // Send notifications of build state change
+    //slackSend (color: colorCode, message: summary)
+  
     hipchatSend (color: color, notify: true, message: summary)
-  }
  
-  // emailext (
-  //     subject: subject,
-  //     body: details,
-  //     recipientProviders: [[$class: 'CulpritsRecipientProvider']]
-  //   )
+    // emailext (
+    //     subject: subject,
+    //     body: details,
+    //     recipientProviders: [[$class: 'CulpritsRecipientProvider']]
+    //   )
+ }
 }
