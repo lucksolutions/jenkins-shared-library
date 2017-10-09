@@ -3,6 +3,7 @@ def call(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
   previousStatus = currentBuild.getPreviousBuild() ?: 'SUCCESSFUL'
+  sh "echo Previous status was: ${previousStatus}"
  
   // Default values
   def colorName = 'RED'
