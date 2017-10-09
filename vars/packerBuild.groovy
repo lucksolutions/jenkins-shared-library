@@ -10,7 +10,7 @@ def call(body) {
     }
 
     dir("${config.directory}") {
-        withCredentials([AmazonWebServicesCredentials(credentialsId: 'aws', accessKeyVariable: 'AWS_ACCESS_KEY', secretKeyVariable: 'AWS_SECRET_KEY')]) {
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws', accessKeyVariable: 'AWS_ACCESS_KEY', secretKeyVariable: 'AWS_SECRET_KEY')]]) {
             stage("Build") {
 
                 def variables = "-var aws_access_key=${AWS_ACCESS_KEY} -var aws_secret_key=${AWS_SECRET_KEY} "
