@@ -13,7 +13,7 @@ def call(body) {
         properties([
             pipelineTriggers([
                 pollSCM('*/5 * * * *')
-            ])
+            ]),
             disableConcurrentBuilds()
         ])
 
