@@ -14,6 +14,7 @@ def call(body) {
             pipelineTriggers([
                 pollSCM('*/5 * * * *')
             ])
+            disableConcurrentBuilds()
         ])
 
         try {
