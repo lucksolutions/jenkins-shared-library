@@ -8,7 +8,6 @@ def call(String buildStatus = 'STARTED') {
   if (previousStatus == 'SUCCESS') {
     previousStatus = 'SUCCESSFUL'
   }
-  sh "echo Previous status was: ${previousStatus}"
  
   // Default values
   def colorName = 'RED'
