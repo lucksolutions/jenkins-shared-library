@@ -22,9 +22,9 @@ def call(body) {
             }
 
             packerBuild {
-                directory = "${config.directory}"
-                vars = "${config.vars}"
-                packerFile = "${config.packerFile}"
+                directory = config.directory
+                vars = config.vars
+                packerFile = config.packerFile
             }
         } finally {
             //Send build notifications if needed

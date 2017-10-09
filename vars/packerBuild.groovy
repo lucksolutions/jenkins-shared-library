@@ -17,7 +17,7 @@ def call(body) {
                 def keys = config.vars.keySet();
                 for (int i=0; i<keys.size(); ++i) {
                     def key = keys[i]
-                    variables = variables + '-var ' + key + '=' config.vars[key] + ' '
+                    variables = "${variables} -var ${key}=${config.vars[key]} "
                 }
 
                 sh "packer build ${variables} ${config.packerFile}"
