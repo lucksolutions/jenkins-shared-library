@@ -61,12 +61,8 @@ def call(body) {
                     sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -s settings.xml deploy'
                 }
             }
-        // } catch (e) {
-        //     // If there was an exception thrown, the build failed
-        //     currentBuild.result = "FAILED"
-        //     throw e
         } finally {
-            // Success or failure, always send notifications
+            //Send build notifications if needed
             notifyBuild(currentBuild.result)
         }
     }
