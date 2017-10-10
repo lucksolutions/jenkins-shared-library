@@ -20,7 +20,7 @@ def call(body) {
                     variables = "${variables} -var ${key}=${config.vars[key]} "
                 }
 
-                sh "packer build -debug ${variables} ${config.packerFile}"
+                sh "export PACKER_LOG=1; packer build ${variables} ${config.packerFile}"
             }
         }
     }
