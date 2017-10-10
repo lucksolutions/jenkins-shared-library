@@ -9,7 +9,7 @@ def call(body) {
         config.directory = '.'
     }
 
-    node {
+    node('master') {
         properties([
             pipelineTriggers([
                 pollSCM('*/5 * * * *')
