@@ -9,13 +9,6 @@ def call(body) {
         config.directory = '.'
     }
 
-    //Skip the build if this was caused by branch indexing
-    sh "Build cause was ${env.BUILD_CAUSE}"
-    if (env.BUILD_CAUSE == 'Branch indexing') {
-        currentBuild.result = 'SUCCESSFUL'
-        return
-    }
-
     node {
         properties([
             pipelineTriggers([
@@ -23,6 +16,13 @@ def call(body) {
             ]),
             disableConcurrentBuilds()
         ])
+
+        //Skip the build if this was caused by branch indexing
+        sh "Build cause was ${env.BUILD_CAUSE}"
+        if (env.BUILD_CAUSE == 'Branch indexing') {
+            currentBuild.result = 'SUCCESSFUL'
+            return
+        }
 
         try {
             stage('Checkout SCM') {
