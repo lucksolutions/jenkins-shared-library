@@ -30,11 +30,14 @@ def call(body) {
             stage('Check Cause') {
                 //Skip the build if this was caused by branch indexing
                 def causes = currentBuild.rawBuild.getCauses()
-                def buildCause = ''
                 for (int i=0; i<causes.size(); ++i) {
-                    buildCause = "${buildCause} ${causes[i].getShortDescription()}, "
+                    if (causes[i].getShortDescription().contains('Branch indexing')) {
+                        //Don't build since this was just branch indexing
+                        currentBuild.result = 'ABORTED'
+                        error('Stopping since we dont want to build on every index...')
+                        return
+                    }
                 }
-                sh "echo 'Build cause was: ${buildCause}'"
             }
 
             packerBuild {
