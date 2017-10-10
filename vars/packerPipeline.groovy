@@ -30,7 +30,7 @@ def call(body) {
             stage('Check Cause') {
                 //Skip the build if this was caused by branch indexing
                 def causes = currentBuild.rawBuild.getCauses()
-                sh "echo 'Build cause was: ${causes}'"
+                sh "echo 'Build cause was: ${causes.getShortDescription()}'"
             }
 
             packerBuild {
