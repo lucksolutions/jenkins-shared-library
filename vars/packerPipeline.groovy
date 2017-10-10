@@ -24,9 +24,13 @@ def call(body) {
 
         try {
             stage('Checkout SCM') {
-                //Skip the build if this was caused by branch indexing
-                sh "Build cause was ${env.BUILD_CAUSE}"
                 def scmVars = checkout scm
+            }
+
+            stage('Check Cause') {
+                //Skip the build if this was caused by branch indexing
+                def causes = currentBuild.rawBuild.getCauses()
+                sh "echo 'Build cause was: ${causes}'"
             }
 
             packerBuild {
