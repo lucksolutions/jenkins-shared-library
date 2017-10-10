@@ -21,7 +21,7 @@ def call(body) {
                         variables = "${variables} -var ${key}=${config.vars[key]} "
                     }
 
-                    sh "export PACKER_LOG=1; packer build ${variables} ${config.packerFile}"
+                    sh "packer build ${variables} ${config.packerFile}"
                 } catch (e) {
                     currentBuild.result = "FAILED"
                     throw e
