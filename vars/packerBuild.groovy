@@ -12,15 +12,20 @@ def call(body) {
     dir("${config.directory}") {
         withCredentials([usernamePassword(credentialsId: 'aws', usernameVariable: 'AWS_ACCESS_KEY', passwordVariable: 'AWS_SECRET_KEY')]) {
             stage("Build") {
+                try {
 
-                def variables = "-var aws_access_key=${env.AWS_ACCESS_KEY} -var aws_secret_key=${env.AWS_SECRET_KEY} "
-                def keys = config.vars.keySet();
-                for (int i=0; i<keys.size(); ++i) {
-                    def key = keys[i]
-                    variables = "${variables} -var ${key}=${config.vars[key]} "
+                    def variables = "-var aws_access_key=${env.AWS_ACCESS_KEY} -var aws_secret_key=${env.AWS_SECRET_KEY} "
+                    def keys = config.vars.keySet();
+                    for (int i=0; i<keys.size(); ++i) {
+                        def key = keys[i]
+                        variables = "${variables} -var ${key}=${config.vars[key]} "
+                    }
+
+                    sh "export PACKER_LOG=1; packer build ${variables} ${config.packerFile}"
+                } catch (e) {
+                    currentBuild.result = "FAILED"
+                    throw e
                 }
-
-                sh "export PACKER_LOG=1; packer build ${variables} ${config.packerFile}"
             }
         }
     }
