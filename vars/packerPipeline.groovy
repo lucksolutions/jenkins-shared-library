@@ -25,7 +25,7 @@ def call(body) {
         try {
             stage('Checkout SCM') {
                 //Skip the build if this was caused by branch indexing
-                sh "Build cause was ${currentBuild.causes}"
+                sh "Build cause was ${env.BUILD_CAUSE}"
                 def scmVars = checkout scm
             }
 
