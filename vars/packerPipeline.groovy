@@ -17,15 +17,15 @@ def call(body) {
             disableConcurrentBuilds()
         ])
 
-        //Skip the build if this was caused by branch indexing
-        sh "Build cause was ${env.BUILD_CAUSE}"
-        if (env.BUILD_CAUSE == 'Branch indexing') {
-            currentBuild.result = 'SUCCESSFUL'
-            return
-        }
+        // if (env.BUILD_CAUSE == 'Branch indexing') {
+        //     currentBuild.result = 'SUCCESSFUL'
+        //     return
+        // }
 
         try {
             stage('Checkout SCM') {
+                //Skip the build if this was caused by branch indexing
+                sh "Build cause was ${currentBuild.causes}"
                 def scmVars = checkout scm
             }
 
