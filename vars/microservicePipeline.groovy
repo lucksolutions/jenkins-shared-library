@@ -57,6 +57,12 @@ def call(body) {
                     }
                 }
 
+                stage('Code Analysis') {
+                    withSonarQubeEnv('CI') {
+                        sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -s settings.xml sonar:sonar'
+                    }
+                }
+
                 stage('Deploy to Repository') {
                     withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
                         sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -s settings.xml deploy'
