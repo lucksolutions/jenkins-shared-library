@@ -3,6 +3,7 @@ def call(body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
     body.delegate = config
+    body()
 
     if (config.directory == null) {
         config.directory = '.'
@@ -25,7 +26,6 @@ def call(body) {
                 imageName = config.imageName
             }
 
-            body()
         } finally {
             //Send build notifications if needed
             notifyBuild(currentBuild.result)
