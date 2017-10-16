@@ -34,14 +34,14 @@ def call(body) {
                     directory = config.directory
                 }
 
-                def keys = config.dockerBuilds.keySet()
                 def builds = [:]
-                for (int i=0; i<keys.size(); ++i) {
-                    builds[keys[i]] = {
-                        echo "Image Name: ${keys[i]}"
+                for (x in config.dockerBuilds.keySet()) {
+                    def image = x
+                    builds[image] = {
+                        echo "Image Name: ${image}"
                         dockerBuild {
-                            directory = config.dockerBuilds[keys[i]]
-                            imageName = keys[i]
+                            directory = config.dockerBuilds[image]
+                            imageName = image
                         }
                     }
                 }
