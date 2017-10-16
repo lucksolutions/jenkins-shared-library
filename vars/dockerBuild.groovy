@@ -14,7 +14,7 @@ def call(body) {
 
     dir("${config.directory}") {
         stage("Build ${config.imageName}") {
-            docker.withServer('tcp://ip-10-247-80-40.us-gov-west-1.compute.internal:2375') {
+            docker.withServer() {
                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                 }
@@ -27,7 +27,7 @@ def call(body) {
             sh 'echo "Executing test cases..."'
         }
         stage("Push ${config.imageName} to Registry") {
-            docker.withServer('tcp://ip-10-247-80-40.us-gov-west-1.compute.internal:2375') {
+            docker.withServer() {
                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                     image.push()
