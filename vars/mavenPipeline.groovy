@@ -17,8 +17,12 @@ def call(body) {
         ])
 
         try {
+            stage('Checkout SCM') {
+                checkout scm
+            }
+
             mavenBuild {
-                directory = config.directory
+                directory = ${config.directory}
             }
         } finally {
             //Send build notifications if needed
