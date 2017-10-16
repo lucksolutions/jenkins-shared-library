@@ -14,7 +14,7 @@ def call(body) {
 
     dir("${config.directory}") {
         stage("Build ${config.imageName}") {
-            docker.withServer() {
+            docker.withServer("${env.DOCKER_HOST}") {
                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                 }
@@ -27,7 +27,7 @@ def call(body) {
             sh 'echo "Executing test cases..."'
         }
         stage("Push ${config.imageName} to Registry") {
-            docker.withServer() {
+            docker.withServer("${env.DOCKER_HOST}") {
                 docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                     image.push()
