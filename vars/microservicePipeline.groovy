@@ -11,7 +11,7 @@ def call(body) {
 
     if (config.dockerBuilds == null) {
         config.dockerBuilds = [
-                "${config.imageName}": config.directory
+                (config.imageName): config.directory
         ]
     }
 
