@@ -37,14 +37,14 @@ def call(body) {
                 def keys = config.dockerBuilds.keySet()
                 def builds = [:]
                 for (int i=0; i<keys.size(); ++i) {
-                    builds["echo ${keys[i]}"] = {
+                    builds[keys[i]] = {
+                        echo "Image Name: ${keys[i]}"
                         dockerBuild {
                             directory = config.dockerBuilds[keys[i]]
                             imageName = keys[i]
                         }
                     }
                 }
-                sh "echo ${builds}"
 
                 parallel builds
             }
