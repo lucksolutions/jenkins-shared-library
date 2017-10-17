@@ -19,18 +19,8 @@ def call(body) {
 
         try {
             stage('Checkout SCM') {
+                ignoreIndexing()
                 def scmVars = checkout scm
-                
-                //Skip the build if this was caused by branch indexing
-                def causes = currentBuild.rawBuild.getCauses()
-                for (int i=0; i<causes.size(); ++i) {
-                    if (causes[i].getShortDescription().contains('Branch indexing')) {
-                        //Don't build since this was just branch indexing
-                        currentBuild.result = 'SUCCESSFUL'
-                        error('Stopping since we dont want to build on every index...')
-                        return
-                    }
-                }
             }
 
             packerBuild {

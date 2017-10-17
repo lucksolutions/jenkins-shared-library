@@ -18,6 +18,7 @@ def call(body) {
 
         try {
             stage('Checkout SCM') {
+                ignoreIndexing()
                 checkout scm
             }
 
