@@ -70,10 +70,12 @@ def call(body) {
             }
         }
 
-        
-        stage('Deploy to Repository') {
-            withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml deploy'
+        //Only run the deploy stage for non PR builds
+        if (!isPullRequest()) {
+            stage('Deploy to Repository') {
+                withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
+                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml deploy'
+                }
             }
         }
     }

@@ -26,13 +26,17 @@ def call(body) {
         stage("Test ${config.imageName}") {
             sh 'echo "Executing test cases..."'
         }
-        stage("Push ${config.imageName} to Registry") {
-            docker.withServer("${env.DOCKER_HOST}") {
-                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-                    def image = docker.build("${config.imageName}:${BRANCH_NAME}")
-                    image.push()
-                    if (env.BRANCH_NAME == 'development') {
-                        image.push('latest')
+
+        //Do not push images for PR builds
+        if (!isPullRequest()) {
+            stage("Push ${config.imageName} to Registry") {
+                docker.withServer("${env.DOCKER_HOST}") {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                        def image = docker.build("${config.imageName}:${BRANCH_NAME}")
+                        image.push()
+                        if (env.BRANCH_NAME == 'development') {
+                            image.push('latest')
+                        }
                     }
                 }
             }
