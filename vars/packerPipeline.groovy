@@ -19,8 +19,7 @@ def call(body) {
 
         try {
             stage('Checkout SCM') {
-                ignoreIndexing()
-                def scmVars = checkout scm
+                checkout scm
             }
 
             packerBuild {
