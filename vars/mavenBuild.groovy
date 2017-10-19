@@ -11,6 +11,11 @@ def call(body) {
 
 
     dir("${config.directory}") {
+        stage('Debug') {
+            echo "Branch Name: ${env.BRANCH_NAME}"
+            echo "Change ID: ${env.CHANGE_ID}"
+        }
+
         stage('Maven Build') {
             def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
             writeFile file: 'settings.xml', text: mavenSettings
@@ -46,6 +51,7 @@ def call(body) {
         }
 
         stage('Code Analysis') {
+            //See https://stackoverflow.com/questions/41695530/how-to-get-pull-request-id-from-jenkins-pipeline for details on how to "preview" sonar for PRs
             withSonarQubeEnv('CI') {
                 sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml sonar:sonar'
             }
@@ -60,7 +66,7 @@ def call(body) {
             }
         }
 
-
+        
         stage('Deploy to Repository') {
             withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
                 sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml deploy'
