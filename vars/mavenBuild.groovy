@@ -11,7 +11,7 @@ def call(body) {
 
 
     dir("${config.directory}") {
-        def tmpDir = pwd("tmp")
+        def tmpDir = pwd(tmp: true)
 
         stage('Debug') {
             echo "Branch Name: ${env.BRANCH_NAME}"
