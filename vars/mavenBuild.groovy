@@ -11,6 +11,8 @@ def call(body) {
 
 
     dir("${config.directory}") {
+        def tmpDir = pwd("tmp")
+
         stage('Debug') {
             echo "Branch Name: ${env.BRANCH_NAME}"
             echo "Change ID: ${env.CHANGE_ID}"
@@ -18,6 +20,7 @@ def call(body) {
             echo "Change Target: ${env.CHANGE_TARGET}"
             echo "ChangeSet Size: ${currentBuild.changeSets.size()}"
             echo "Pull Request?: ${isPullRequest()}"
+            echo "Temp Dir: ${tmpDir}"
         }
 
         stage('Maven Build') {
