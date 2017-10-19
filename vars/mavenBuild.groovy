@@ -75,14 +75,14 @@ def call(body) {
             }
         }
 
-        stage("Quality Gate") {
-            timeout(time: 15, unit: 'MINUTES') {
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                }
-            }
-        }
+        // stage("Quality Gate") {
+        //     timeout(time: 15, unit: 'MINUTES') {
+        //         def qg = waitForQualityGate()
+        //         if (qg.status != 'OK') {
+        //             error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        //         }
+        //     }
+        // }
 
         //Only run the deploy stage for non PR builds
         if (!isPullRequest()) {
