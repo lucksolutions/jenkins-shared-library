@@ -68,8 +68,9 @@ def call(body) {
             withSonarQubeEnv('CI') {
                 if (isPullRequest()) {
                     //Use Preview mode for PRs
+                    //-Dsonar.links.scm_dev=${repoUrl} -Dsonar.links.scm=${repoUrl}
                     withCredentials([string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')]) {
-                        sh "${mvnCmd} -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} -Dsonar.links.scm_dev=${repoUrl} -Dsonar.links.scm=${repoUrl} sonar:sonar"
+                        sh "${mvnCmd} -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN}  -Dsonar.github.repository=department-of-veterans-affairs/ascent-framework sonar:sonar"
                     }
                 } else {
                     sh "${mvnCmd} sonar:sonar"
