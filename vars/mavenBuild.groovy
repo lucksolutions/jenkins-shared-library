@@ -63,7 +63,7 @@ def call(body) {
 
         stage('Code Analysis') {
             //See https://docs.sonarqube.org/display/SONAR/Analysis+Parameters for more info on Sonar analysis configuration
-            def repoUrl = env.CHANGE_URL.substring(0,env.CHANGE_URL.indexOf("/pull/"))
+            def repoUrl = "scm:git:" + env.CHANGE_URL.substring(0,env.CHANGE_URL.indexOf("/pull/"))
             echo "${repoUrl}"
             withSonarQubeEnv('CI') {
                 if (isPullRequest()) {
