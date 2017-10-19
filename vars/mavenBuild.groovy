@@ -60,9 +60,16 @@ def call(body) {
         }
 
         stage('Code Analysis') {
-            //See https://stackoverflow.com/questions/41695530/how-to-get-pull-request-id-from-jenkins-pipeline for details on how to "preview" sonar for PRs
+            //See https://docs.sonarqube.org/display/SONAR/Analysis+Parameters for more info on Sonar analysis configuration
             withSonarQubeEnv('CI') {
-                sh "${mvnCmd} sonar:sonar"
+                if (isPullRequest()) {
+                    //Use Preview mode for PRs
+                    withCredentials(string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')) {
+                        sh "${mvnCmd} -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} sonar:sonar"
+                    }
+                } else {
+                    sh "${mvnCmd} sonar:sonar"
+                }
             }
         }
 
