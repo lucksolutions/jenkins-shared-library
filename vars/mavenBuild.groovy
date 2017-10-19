@@ -9,9 +9,12 @@ def call(body) {
         config.directory = '.'
     }
 
+    def tmpDir = pwd(tmp: true)
+    def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
+    writeFile file: "${tmpDir}/settings.xml", text: mavenSettings
+    def mvnCmd = "mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s ${tmpDir}/settings.xml"
 
     dir("${config.directory}") {
-        def tmpDir = pwd(tmp: true)
 
         stage('Debug') {
             echo "Branch Name: ${env.BRANCH_NAME}"
@@ -20,20 +23,17 @@ def call(body) {
             echo "Change Target: ${env.CHANGE_TARGET}"
             echo "ChangeSet Size: ${currentBuild.changeSets.size()}"
             echo "Pull Request?: ${isPullRequest()}"
-            echo "Temp Dir: ${tmpDir}"
         }
 
         stage('Maven Build') {
-            def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
-            writeFile file: 'settings.xml', text: mavenSettings
             withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml clean compile test-compile'
+                sh "${mvnCmd} clean compile test-compile"
             }
         }
 
         try {
             stage('Unit Testing') {
-                sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -Dmaven.test.failure.ignore=true -s settings.xml test'   
+                sh "${mvnCmd} -Dmaven.test.failure.ignore=true test"   
             }
         } finally {
             step([$class: 'JUnitResultArchiver', testResults: '**/surefire-reports/*.xml', healthScaleFactor: 1.0, allowEmptyResults: true])
@@ -44,7 +44,7 @@ def call(body) {
 
         stage('Package') {
             try {
-                sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml package'
+                sh "${mvnCmd} package"
             } finally {
                 publishHTML (target: [
                     allowMissing: true,
@@ -60,7 +60,7 @@ def call(body) {
         stage('Code Analysis') {
             //See https://stackoverflow.com/questions/41695530/how-to-get-pull-request-id-from-jenkins-pipeline for details on how to "preview" sonar for PRs
             withSonarQubeEnv('CI') {
-                sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml sonar:sonar'
+                sh "${mvnCmd} sonar:sonar"
             }
         }
 
@@ -77,7 +77,7 @@ def call(body) {
         if (!isPullRequest()) {
             stage('Deploy to Repository') {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
-                    sh 'mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s settings.xml deploy'
+                    sh "${mvnCmd} deploy"
                 }
             }
         }
