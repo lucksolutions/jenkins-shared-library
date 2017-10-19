@@ -17,6 +17,7 @@ def call(body) {
             echo "Change URL: ${env.CHANGE_URL}"
             echo "Change Target: ${env.CHANGE_TARGET}"
             echo "ChangeSet Size: ${currentBuild.changeSets.size()}"
+            echo "Pull Request?: ${isPullRequest()}"
         }
 
         stage('Maven Build') {
