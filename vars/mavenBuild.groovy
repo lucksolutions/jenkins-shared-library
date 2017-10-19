@@ -66,7 +66,7 @@ def call(body) {
             withSonarQubeEnv('CI') {
                 if (isPullRequest()) {
                     //Use Preview mode for PRs
-                    withCredentials(StringBinding(credentialsId: 'Github', variable: 'GITHUB_TOKEN')) {
+                    withCredentials([string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')]) {
                         sh "${mvnCmd} -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} sonar:sonar"
                     }
                 } else {
