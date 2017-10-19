@@ -69,7 +69,7 @@ def call(body) {
                 if (isPullRequest()) {
                     //Use Preview mode for PRs
                     withCredentials([string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')]) {
-                        sh "${mvnCmd} -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} -Dsonar.links.scm_dev=${repoUrl} -Dsonar.links.scm=${repoUrl} sonar:sonar"
+                        sh "${mvnCmd} -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} -Dsonar.links.scm_dev=${repoUrl} -Dsonar.links.scm=${repoUrl} sonar:sonar"
                     }
                 } else {
                     sh "${mvnCmd} sonar:sonar"
