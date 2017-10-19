@@ -9,10 +9,12 @@ def call(body) {
         config.directory = '.'
     }
 
-    def tmpDir = pwd(tmp: true)
-    def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
-    writeFile file: "${tmpDir}/settings.xml", text: mavenSettings
-    def mvnCmd = "mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s ${tmpDir}/settings.xml"
+    stage('Configure Maven') {
+        def tmpDir = pwd(tmp: true)
+        def mavenSettings = libraryResource 'com/lucksolutions/maven/settings.xml'
+        writeFile file: "${tmpDir}/settings.xml", text: mavenSettings
+        def mvnCmd = "mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Ddockerfile.skip=true -DskipITs=true -s ${tmpDir}/settings.xml"
+    }
 
     dir("${config.directory}") {
 
