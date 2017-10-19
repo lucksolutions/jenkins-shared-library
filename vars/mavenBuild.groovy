@@ -63,11 +63,13 @@ def call(body) {
 
         stage('Code Analysis') {
             //See https://docs.sonarqube.org/display/SONAR/Analysis+Parameters for more info on Sonar analysis configuration
+            def repoUrl = env.CHANGE_URL.substring(0,env.CHANGE_URL.indexOf("/pull/"))
+            echo "${repoUrl}"
             withSonarQubeEnv('CI') {
                 if (isPullRequest()) {
                     //Use Preview mode for PRs
                     withCredentials([string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')]) {
-                        sh "${mvnCmd} -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} sonar:sonar"
+                        sh "${mvnCmd} -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN} -Dsonar.links.scm=${repoUrl} sonar:sonar"
                     }
                 } else {
                     sh "${mvnCmd} sonar:sonar"
