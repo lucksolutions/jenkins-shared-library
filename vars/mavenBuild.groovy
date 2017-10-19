@@ -63,14 +63,16 @@ def call(body) {
 
         stage('Code Analysis') {
             //See https://docs.sonarqube.org/display/SONAR/Analysis+Parameters for more info on Sonar analysis configuration
-            def repoUrl = env.CHANGE_URL.substring(0,env.CHANGE_URL.indexOf("/pull/"))
-            echo "${repoUrl}"
+
+            //Repo parameter needs to be <org>/<repo name>
+            def repoUrlBase = "https://github.com/"
+            def repo = env.CHANGE_URL.substring(env.CHANGE_URL.indexOf(repoUrlBase) + repoUrlBase.length(),env.CHANGE_URL.indexOf("/pull/"))
+            echo "${repo}"
             withSonarQubeEnv('CI') {
                 if (isPullRequest()) {
                     //Use Preview mode for PRs
-                    //-Dsonar.links.scm_dev=${repoUrl} -Dsonar.links.scm=${repoUrl}
                     withCredentials([string(credentialsId: 'Github', variable: 'GITHUB_TOKEN')]) {
-                        sh "${mvnCmd} -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN}  -Dsonar.github.repository=department-of-veterans-affairs/ascent-framework sonar:sonar"
+                        sh "${mvnCmd} -X -Dsonar.analysis.mode=preview -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.oauth=${GITHUB_TOKEN}  -Dsonar.github.repository=${repo} sonar:sonar"
                     }
                 } else {
                     sh "${mvnCmd} sonar:sonar"
@@ -78,17 +80,17 @@ def call(body) {
             }
         }
 
-        // stage("Quality Gate") {
-        //     timeout(time: 15, unit: 'MINUTES') {
-        //         def qg = waitForQualityGate()
-        //         if (qg.status != 'OK') {
-        //             error "Pipeline aborted due to quality gate failure: ${qg.status}"
-        //         }
-        //     }
-        // }
-
-        //Only run the deploy stage for non PR builds
+        //Only run the Sonar quality gate and deploy stage for non PR builds
         if (!isPullRequest()) {
+            stage("Quality Gate") {
+                timeout(time: 15, unit: 'MINUTES') {
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
+                }
+            }
+
             stage('Deploy to Repository') {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'DEPLOY_USER', passwordVariable: 'DEPLOY_PASSWORD')]) {
                     sh "${mvnCmd} deploy"
