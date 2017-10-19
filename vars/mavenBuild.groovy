@@ -14,6 +14,9 @@ def call(body) {
         stage('Debug') {
             echo "Branch Name: ${env.BRANCH_NAME}"
             echo "Change ID: ${env.CHANGE_ID}"
+            echo "Change URL: ${env.CHANGE_URL}"
+            echo "Change Target: ${env.CHANGE_TARGET}"
+            echo "ChangeSet Size: ${currentBuild.changeSets.size()}"
         }
 
         stage('Maven Build') {
