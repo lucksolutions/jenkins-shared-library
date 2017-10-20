@@ -17,8 +17,8 @@ def call(body) {
         //Create a milestone that will abort older builds when a newer build passes this stage.
         milestone()
         def versions = input(id: "versions", message: "Release this build?", parameters: [
-            [$class: 'TextParameterDefinition', defaultValue: '', description: 'Release Version', name: 'release'],
-            [$class: 'TextParameterDefinition', defaultValue: '', description: 'Next Development Version', name: 'development']
+            [$class: 'StringParameterDefinition', defaultValue: '', description: 'Release Version', name: 'release'],
+            [$class: 'StringParameterDefinition', defaultValue: '', description: 'Next Development Version', name: 'development']
         ])
         milestone()
 
