@@ -15,7 +15,7 @@ def call(body) {
     dir("${config.directory}") {
         stage("Build ${config.imageName}") {
             docker.withServer("${env.DOCKER_HOST}") {
-                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                docker.withRegistry("${env.DOCKER_REPOSITORY_URL}", 'dockerhub') {
                     def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                 }
             }
@@ -31,7 +31,7 @@ def call(body) {
         if (!isPullRequest()) {
             stage("Push ${config.imageName} to Registry") {
                 docker.withServer("${env.DOCKER_HOST}") {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+                    docker.withRegistry("${env.DOCKER_REPOSITORY_URL}", 'dockerhub') {
                         def image = docker.build("${config.imageName}:${BRANCH_NAME}")
                         image.push()
                         if (env.BRANCH_NAME == 'development') {
