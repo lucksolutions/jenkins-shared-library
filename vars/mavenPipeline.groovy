@@ -30,8 +30,8 @@ def call(body) {
         }
     }
 
-    release {
-        directory = config.directory
-    }
+    // release {
+    //     directory = config.directory
+    // }
 
 }
