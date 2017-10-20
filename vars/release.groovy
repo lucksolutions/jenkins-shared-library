@@ -5,22 +5,15 @@ def call(body) {
     body.delegate = config
     body()
 
-    //Required Parameters
-    if (config.releaseVersion == null) {
-        error('Release version number is required.')
-    }
-
-    if (config.devVersion == null) {
-        error('Next development version number is required.')
-    }
-
     //Optional Parameters
-
     if (config.directory == null) {
         config.directory = '.'
     }
 
-    if (!isPullRequest()) {
+    def buildStatus =  currentBuild.result ?: 'SUCCESSFUL'
+    echo "Build Status: ${currentBuild.result}" 
+
+    if (!isPullRequest() && buildStatus == 'SUCCESSFUL') {
         node {
             stage('Create Release') {
                 //Create a milestone that will abort older builds when a newer build passes this stage.
