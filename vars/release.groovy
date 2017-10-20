@@ -46,7 +46,7 @@ def call(body) {
                 sh 'git branch -a'
 
                 //Compare to master branch to look for any unmerged changes
-                def commitsBehind = sh(returnStdout: true, script: "git rev-list --right-only --count ${env.BRANCH_NAME}...origin/master").trim().toInteger()
+                def commitsBehind = sh(returnStdout: true, script: "git rev-list --right-only --count HEAD...remotes/origin/master").trim().toInteger()
                 if (commitBehind > 0) {
                     error("Master Branch has changesets not included on this branch. Please merge master into your branch before releaseing.")
                 } else {
