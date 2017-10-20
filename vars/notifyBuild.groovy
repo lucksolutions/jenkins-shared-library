@@ -37,7 +37,8 @@ def call(String buildStatus = 'STARTED') {
     // Send notifications of build state change
     //slackSend (color: colorCode, message: summary)
   
-    hipchatSend (color: color, notify: true, message: summary)
+    echo "Notifying that build was a ${buildStatus}"
+    //hipchatSend (color: color, notify: true, message: summary)
  
     // emailext (
     //     subject: subject,
