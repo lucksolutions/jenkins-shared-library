@@ -39,6 +39,8 @@ def call(body) {
             }
 
             stage('Check master branch') {
+                sh 'git branch -r'
+
                 //Compare to master branch to look for any unmerged changes
                 def commitsBehind = sh(returnStdout: true, script: "git rev-list --right-only --count ${env.BRANCH_NAME}...origin/master").trim().toInteger()
                 if (commitBehind > 0) {
@@ -57,6 +59,7 @@ def call(body) {
 
             stage('Tag Release') {
                 //Tag release
+                sh "git tag -a ${versions['release']} -m \"Release version ${versions['release']}\""
                 //Commit changes locally
             }
 
