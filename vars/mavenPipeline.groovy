@@ -28,10 +28,10 @@ def call(body) {
             //Send build notifications if needed
             notifyBuild(currentBuild.result)
         }
+    }
 
-        release {
-            directory = config.directory
-        }
+    release {
+        directory = config.directory
     }
 
 }

@@ -14,16 +14,24 @@ def call(body) {
     echo "Build Status: ${currentBuild.result}" 
 
     if (!isPullRequest() && buildStatus == 'SUCCESSFUL') {
+        //Create a milestone that will abort older builds when a newer build passes this stage.
+        milestone()
+        input(id: "versions", message: "Release this build?", parameters: [
+            [$class: 'TextParameterDefinition', defaultValue: '', description: 'Release Version', name: 'release'],
+            [$class: 'TextParameterDefinition', defaultValue: '', description: 'Next Development Version', name: 'development']
+        ])
+        milestone()
+
         node {
-            stage('Create Release') {
-                //Create a milestone that will abort older builds when a newer build passes this stage.
-                milestone()
-                input(id: "versions", message: "Release this build?", parameters: [
-                    [$class: 'TextParameterDefinition', defaultValue: '', description: 'Release Version', name: 'release'],
-                    [$class: 'TextParameterDefinition', defaultValue: '', description: 'Next Development Version', name: 'development']
-                ])
-                milestone()
-            }
+            // stage('Create Release') {
+            //     //Create a milestone that will abort older builds when a newer build passes this stage.
+            //     milestone()
+            //     input(id: "versions", message: "Release this build?", parameters: [
+            //         [$class: 'TextParameterDefinition', defaultValue: '', description: 'Release Version', name: 'release'],
+            //         [$class: 'TextParameterDefinition', defaultValue: '', description: 'Next Development Version', name: 'development']
+            //     ])
+            //     milestone()
+            // }
 
             stage('Build Info') {
                 echo "Branch Name: ${env.BRANCH_NAME}"
