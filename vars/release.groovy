@@ -39,7 +39,11 @@ def call(body) {
             }
 
             stage('Check master branch') {
-                sh 'git branch -r'
+                //sh 'git checkout --track -b master origin/master'
+                def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+                sh 'git branch -a'
+                sh "git fetch --no-tags --progress ${url} +refs/heads/master:refs/remotes/origin/master"
+                sh 'git branch -a'
 
                 //Compare to master branch to look for any unmerged changes
                 def commitsBehind = sh(returnStdout: true, script: "git rev-list --right-only --count ${env.BRANCH_NAME}...origin/master").trim().toInteger()
