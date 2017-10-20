@@ -40,9 +40,7 @@ def call(body) {
 
             stage('Check master branch') {
                 def url = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
-                sh 'git branch -a'
                 sh "git fetch --no-tags --progress ${url} +refs/heads/master:refs/remotes/origin/master"
-                sh 'git branch -a'
 
                 //Compare to master branch to look for any unmerged changes
                 def commitsBehind = sh(returnStdout: true, script: "git rev-list --right-only --count HEAD...remotes/origin/master").trim().toInteger()
@@ -63,7 +61,7 @@ def call(body) {
 
             stage('Set Release Version') {
                 //Set release version
-                sh "${mvnCmd} version:set -DnewVersion=${versions['release']}"
+                sh "${mvnCmd} versions:set -DnewVersion=${versions['release']}"
 
                 //Update SNAPSHOT dependencies to their release versions if available
                 sh "${mvnCmd} versions:use-releases"
@@ -86,7 +84,7 @@ def call(body) {
 
             stage('Set Next Development Version') {
                 //Set the next dev version
-                sh "${mvnCmd} version:set -DnewVersion=${versions['development']}"
+                sh "${mvnCmd} versions:set -DnewVersion=${versions['development']}"
                 //Commit changes locally
                 sh "git commit -a -m \"Preparing POMs for next development version ${versions['development']}\""
 
